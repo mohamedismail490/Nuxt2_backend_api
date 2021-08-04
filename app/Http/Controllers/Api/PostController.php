@@ -47,6 +47,15 @@ class PostController extends Controller
         return new PostResource($post);
     }
 
+    public function edit(Topic $topic, Post $post): PostResource
+    {
+        $post = $this->postRepo->getPostById($post -> id, [
+            'topic_id' => $topic -> id,
+            'user_id'  => auth() -> user() -> id
+        ]);
+        return new PostResource($post);
+    }
+
     public function update(PostRequest $request, Topic $topic, Post $post): JsonResponse
     {
         $this -> authorize('update', $post);

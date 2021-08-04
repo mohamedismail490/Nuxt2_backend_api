@@ -40,6 +40,14 @@ class TopicController extends Controller
         return new TopicResource($topic);
     }
 
+    public function edit(Topic $topic): TopicResource
+    {
+        $topic = $this->topicRepo->getTopicById($topic->id, [
+            'user_id' => auth() -> user() -> id
+        ]);
+        return new TopicResource($topic);
+    }
+
     public function update(TopicUpdateRequest $request, Topic $topic): JsonResponse
     {
         $this -> authorize('update', $topic);

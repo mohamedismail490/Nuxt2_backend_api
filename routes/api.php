@@ -30,6 +30,7 @@ Route::group([ 'middleware' => 'api'], function () {
         Route::get('', [Api\TopicController::class, 'index']);
         Route::post('', [Api\TopicController::class, 'store'])->middleware('auth:api');
         Route::get('{topic}', [Api\TopicController::class, 'show']);
+        Route::get('edit/{topic}', [Api\TopicController::class, 'edit'])->middleware('auth:api');
         Route::patch('{topic}', [Api\TopicController::class, 'update'])->middleware('auth:api');
         Route::delete('{topic}', [Api\TopicController::class, 'destroy'])->middleware('auth:api');
         //Posts
@@ -37,6 +38,7 @@ Route::group([ 'middleware' => 'api'], function () {
             Route::get('', [Api\PostController::class, 'index']);
             Route::post('', [Api\PostController::class, 'store'])->middleware('auth:api');
             Route::get('{post}', [Api\PostController::class, 'show']);
+            Route::get('edit/{post}', [Api\PostController::class, 'edit'])->middleware('auth:api');
             Route::patch('{post}', [Api\PostController::class, 'update'])->middleware('auth:api');
             Route::delete('{post}', [Api\PostController::class, 'destroy'])->middleware('auth:api');
         });
