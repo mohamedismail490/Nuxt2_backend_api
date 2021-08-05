@@ -82,4 +82,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this -> id === $post -> user_id;
     }
+
+    public function hasLikedPost(Post $post) {
+        return $post->likes->where('user_id', $this->id)->count() >= 1;
+    }
 }

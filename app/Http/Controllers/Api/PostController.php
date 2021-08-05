@@ -70,4 +70,14 @@ class PostController extends Controller
         return response() -> json($destroy);
     }
 
+    public function toggleLike(Topic $topic, Post $post): JsonResponse
+    {
+//        $this -> authorize('like', $post);
+        $post = $this->postRepo->getPostById($post -> id, [
+            'topic_id' => $topic -> id
+        ]);
+        $toggle = $this->postRepo->toggleLike($post, auth() -> user() -> id);
+        return response() -> json($toggle);
+    }
+
 }

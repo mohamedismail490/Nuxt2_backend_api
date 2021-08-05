@@ -1,6 +1,8 @@
 <?php
 namespace App\Repositories;
 
+use App\Http\Resources\PostResource;
+use App\Models\Like;
 use App\Models\Post;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -107,6 +109,49 @@ class PostRepository{
             return (object)[
                 'status'  => true,
                 'message' => 'Post has been Deleted Successfully'
+            ];
+        }catch (Exception $e){
+            DB::rollback();
+            return (object)[
+                'status'  => false,
+                'message' => 'Something wrong happened! Please, try again.'
+            ];
+        }
+    }
+
+    public function toggleLike($post, $userId): object
+    {
+        if ($post -> user_id == $userId) {
+            return (object)[
+                'status'  => false,
+                'message' => 'You Can\'t Like Your Own Post!'
+            ];
+        }
+        $isAlreadyLiked = false;
+        $existPostLike = Like::query()->where('likeable_id', $post -> id)
+            ->where('user_id', $userId)
+            ->where('likeable_type', 'App\Models\Post')
+            ->first();
+        if (!empty($existPostLike)){
+            $isAlreadyLiked = true;
+        }
+        $postLikesCount = $post -> likes -> count();
+        try{
+            DB::beginTransaction();
+            if ($isAlreadyLiked) {
+                $existPostLike->delete();
+            }else {
+                $post -> likes() -> create([
+                    'user_id' => $userId
+                ]);
+            }
+            $isNowLiked = !$isAlreadyLiked;
+            DB::commit();
+            return (object)[
+                'status'      => true,
+                'message'     => $isNowLiked ? 'Post Liked' : 'Post Unliked',
+                'is_liked'    => $isNowLiked,
+                'likes_count' => $isNowLiked ? ($postLikesCount + 1) : (($postLikesCount > 0) ? ($postLikesCount - 1) : 0),
             ];
         }catch (Exception $e){
             DB::rollback();

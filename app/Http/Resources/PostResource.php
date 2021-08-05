@@ -19,7 +19,10 @@ class PostResource extends JsonResource
             'topic_id'      => $this -> topic_id,
             'body'          => $this -> body,
             'created_since' => $this -> created_since,
-            'user'          => new UserResource($this -> user)
+            'user'          => new UserResource($this -> user),
+            'likes_count'   => $this -> likes -> count(),
+//            'likes_users'   => UserResource::collection($this -> likes -> pluck('user')),
+            'liked_by_user' => auth() -> check() ? auth() -> user() -> hasLikedPost($this->resource) : false
         ];
     }
 }

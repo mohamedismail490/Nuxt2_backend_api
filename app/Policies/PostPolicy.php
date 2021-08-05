@@ -24,4 +24,9 @@ class PostPolicy
     {
         return $user -> ownsPost($post);
     }
+
+    public function like(User $user, Post $post): bool
+    {
+        return !$user -> ownsPost($post);
+    }
 }
